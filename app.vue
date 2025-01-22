@@ -37,7 +37,10 @@
           :key="index"
           class="p-4 border rounded"
         >
-          <p class="font-medium">{{ issue.message }}</p>
+          <p class="font-medium">{{ getIssueMessage(issue.message) }}</p>
+          <p v-if="getIssueRecommendation(issue.message)" class="mt-2 text-sm text-blue-600">
+            <strong>Recommendation:</strong> {{ getIssueRecommendation(issue.message) }}
+          </p>
           <p class="text-sm text-gray-600">Code: {{ issue.code }}</p>
           <p class="text-sm text-gray-600">Context: {{ issue.context }}</p>
           <p class="text-sm text-gray-600">Selector: {{ issue.selector }}</p>
@@ -56,8 +59,16 @@ const results = ref(null)
 const isLoading = ref(false)
 const error = ref(null)
 
-async function runAudit() {
+function getIssueMessage(message) {
+  return message.split(' Recommendation:')[0].trim()
+}
 
+function getIssueRecommendation(message) {
+  const parts = message.split(' Recommendation:')
+  return parts.length > 1 ? parts[1].trim() : ''
+}
+
+async function runAudit() {
   isLoading.value = true
   error.value = null
   results.value = null
