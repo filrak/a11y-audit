@@ -31,19 +31,27 @@
 
     <div v-if="results" class="space-y-4">
       <h2 class="text-xl font-semibold">Audit Results</h2>
-      <div v-if="results.issues?.length" class="space-y-2">
+      <div v-if="results.issues?.length" class="space-y-4">
         <div 
           v-for="(issue, index) in results.issues" 
           :key="index"
-          class="p-4 border rounded"
+          class="p-4 border rounded flex gap-4"
         >
-          <p class="font-medium">{{ getIssueMessage(issue.message) }}</p>
-          <p v-if="getIssueRecommendation(issue.message)" class="mt-2 text-sm text-blue-600">
-            <strong>Recommendation:</strong> {{ getIssueRecommendation(issue.message) }}
-          </p>
-          <p class="text-sm text-gray-600">Code: {{ issue.code }}</p>
-          <p class="text-sm text-gray-600">Context: {{ issue.context }}</p>
-          <p class="text-sm text-gray-600">Selector: {{ issue.selector }}</p>
+          <div class="w-1/4">
+            <img 
+              v-if="issue.selector" 
+              width="150px"
+              :src="`/screenshots/issue_${index + 1}.png`" 
+              :alt="`Screenshot of issue ${index + 1}`"
+              class="w-full rounded border"
+            />
+          </div>
+          <div class="flex-1">
+            <p class="font-medium">{{ issue.runnerExtras.help }}</p>
+            <p class="text-sm text-gray-600 pt-2">Context: {{ issue.context }}</p>
+            <p class="text-sm text-gray-600">Selector: {{ issue.selector }}</p>
+            <a :href="issue.runnerExtras.helpUrl" class="text-sm text-blue-500 cursor-pointer">Learn more about this issue and how to fix it </a>
+          </div>
         </div>
       </div>
       <div v-else class="text-green-500">
@@ -54,19 +62,10 @@
 </template>
 
 <script setup>
-const url = ref('')
+const url = ref('https://alokai.com')
 const results = ref(null)
 const isLoading = ref(false)
 const error = ref(null)
-
-function getIssueMessage(message) {
-  return message.split(' Recommendation:')[0].trim()
-}
-
-function getIssueRecommendation(message) {
-  const parts = message.split(' Recommendation:')
-  return parts.length > 1 ? parts[1].trim() : ''
-}
 
 async function runAudit() {
   isLoading.value = true
@@ -83,6 +82,7 @@ async function runAudit() {
     })
     
     const data = await response.json()
+    console.log(data.results)
 
     if (!response.ok) throw new Error(data.message || 'Failed to run audit')
     
