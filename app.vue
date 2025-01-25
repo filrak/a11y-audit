@@ -37,16 +37,15 @@
           :key="index"
           class="p-4 border rounded flex gap-4"
         >
-          <div class="w-1/4">
+          <div class="w-1/4 flex items-center justify-center">
             <img 
               v-if="issue.selector" 
-              width="150px"
               :src="`/screenshots/issue_${index + 1}.png`" 
               :alt="`Screenshot of issue ${index + 1}`"
-              class="w-full rounded border"
+              class="w-sm m-auto"
             />
           </div>
-          <div class="flex-1">
+          <div class="w-3/4">
             <p class="font-medium">{{ issue.runnerExtras.help }}</p>
             <p class="text-sm text-gray-600 pt-2">Context: {{ issue.context }}</p>
             <p class="text-sm text-gray-600">Selector: {{ issue.selector }}</p>
@@ -66,6 +65,7 @@ const url = ref('https://alokai.com')
 const results = ref(null)
 const isLoading = ref(false)
 const error = ref(null)
+
 
 async function runAudit() {
   isLoading.value = true
