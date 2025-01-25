@@ -66,7 +66,6 @@ const results = ref(null)
 const isLoading = ref(false)
 const error = ref(null)
 
-
 async function runAudit() {
   isLoading.value = true
   error.value = null
